@@ -1,0 +1,3 @@
+name: LocationFromSignAPI
+version: '${version}'
+main: me.drakosha.locationfromsignapi.LocationFromSignAPI
