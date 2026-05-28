@@ -48,18 +48,18 @@ public class YmlUtil {
             saveConfig();
         }
     }
-    public String getPathToArraySign(String lines[]){
+    public String getPathToArraySign(String[] lines){
         if (lines == null) return "";
-        String path = "";
+        StringBuilder path = new StringBuilder();
         for (String s : lines){
             if (s.isEmpty()) break;
             if (s.equals("point")){
-                path += s + ".";
+                path.append(s).append(".");
                 continue;
             }
-            path += s;
+            path.append(s);
         }
-        return path;
+        return path.toString();
     }
     public Location getLocation(String pathFronSing, World world){
         String path = "point." + pathFronSing;

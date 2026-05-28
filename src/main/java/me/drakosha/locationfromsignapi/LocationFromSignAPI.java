@@ -12,18 +12,20 @@ import java.nio.file.Path;
 
 public class LocationFromSignAPI extends JavaPlugin {
 
+    public static JavaPlugin instance;
     public static File pluginConfig;
 
-    public void init (JavaPlugin plugin) {
-        pluginConfig = new File(plugin.getDataFolder().getPath() + "/LocationInSing", "mapsConfig.yml");
-        createYMLFile(plugin);
+    public static void init (JavaPlugin plugin) {
+        instance = plugin;
+        pluginConfig = new File(instance.getDataFolder().getPath() + "/LocationInSing", "mapsConfig.yml");
+        createYMLFile();
         YmlUtil.loadConfig();
-        Bukkit.getPluginManager().registerEvents(new SignListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new SignListener(), instance);
     }
-    public void createYMLFile(Plugin plugin){
+    public static void createYMLFile(){
         if (!pluginConfig.exists()) {
             try {
-                plugin.getConfig().save(pluginConfig);
+                instance.getConfig().save(pluginConfig);
             } catch (IOException e) {
                 Bukkit.getLogger().info(e.getMessage());
             }
