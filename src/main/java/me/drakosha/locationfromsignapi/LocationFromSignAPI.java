@@ -3,22 +3,23 @@ package me.drakosha.locationfromsignapi;
 import me.drakosha.locationfromsignapi.signlistener.SignListener;
 import me.drakosha.locationfromsignapi.ymlutil.YmlUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 
 public class LocationFromSignAPI extends JavaPlugin {
-    public static JavaPlugin instance;
+    public static Plugin instance;
 
-    public void init (JavaPlugin plugin) {
+    public static void init (Plugin plugin) {
         instance = plugin;
         File pluginConfig = new File(instance.getDataFolder().getPath() + "/LocationInSing", "mapsConfig.yml");
         createYMLFile(pluginConfig);
         new YmlUtil(pluginConfig);
         Bukkit.getPluginManager().registerEvents(new SignListener(), instance);
     }
-    public void createYMLFile(File file ){
+    public static void createYMLFile(File file ){
         if (!file.exists()) {
             try {
                 instance.getConfig().save(file);
