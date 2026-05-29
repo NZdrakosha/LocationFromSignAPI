@@ -1,30 +1,31 @@
 package me.drakosha.locationfromsignapi.ymlutil;
 
-import lombok.experimental.UtilityClass;
-import me.drakosha.locationfromsignapi.LocationFromSignAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 
 
-@UtilityClass
 public class YmlUtil {
-    private YamlConfiguration config;
+    private static YamlConfiguration config;
+    private static File configFile;
 
-    public void loadConfig(){
-        config = YamlConfiguration.loadConfiguration(LocationFromSignAPI.pluginConfig);
+    public YmlUtil(File file){
+        config = YamlConfiguration.loadConfiguration(file);
+        configFile = file;
     }
-    public void writeDataConfig(String path, Location location){
+
+    public static void writeDataConfig(String path, Location location){
         if (config.get(path) == null && path.length() > 6) {
+            location.setWorld(Bukkit.getWorlds().get(0));
             config.set(path, location);
             saveConfig();
         }
     }
-    public void removeDataConfig(String path){
+    public static void removeDataConfig(String path){
         if (config.get(path) != null) {
             config.set(path, null);
 
@@ -48,7 +49,7 @@ public class YmlUtil {
             saveConfig();
         }
     }
-    public String getPathToArraySign(String[] lines){
+    public static String getPathToArraySign(String[] lines){
         if (lines == null) return "";
         StringBuilder path = new StringBuilder();
         for (String s : lines){
@@ -61,7 +62,7 @@ public class YmlUtil {
         }
         return path.toString();
     }
-    public Location getLocation(String pathFronSing, World world){
+    public static Location getLocation(String pathFronSing, World world){
         String path = "point." + pathFronSing;
         if (pathFronSing != null){
             Location location = config.getSerializable(path, Location.class);
@@ -72,9 +73,9 @@ public class YmlUtil {
         }
         return null;
     }
-    private void saveConfig(){
+    private static void saveConfig(){
         try {
-            config.save(LocationFromSignAPI.pluginConfig);
+            config.save(configFile);
         }catch (IOException e){
             Bukkit.getLogger().info(e.getMessage());
         }
