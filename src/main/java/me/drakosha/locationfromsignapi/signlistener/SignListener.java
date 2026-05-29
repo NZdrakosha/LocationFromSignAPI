@@ -43,8 +43,6 @@ public class SignListener implements Listener {
 
     public float getYawFromFace(BlockFace face) {
         switch (face) {
-            case SOUTH:
-                return 0.0f;
             case SOUTH_SOUTH_WEST:
                 return 22.5f;
             case SOUTH_WEST:
@@ -75,6 +73,7 @@ public class SignListener implements Listener {
                 return -45.0f;
             case SOUTH_SOUTH_EAST:
                 return -22.5f;
+            case SOUTH:
             case UP:
             case DOWN:
             case SELF:

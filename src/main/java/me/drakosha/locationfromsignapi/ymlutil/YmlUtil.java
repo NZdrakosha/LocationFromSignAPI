@@ -1,5 +1,6 @@
 package me.drakosha.locationfromsignapi.ymlutil;
 
+import me.drakosha.locationfromsignapi.LocationFromSignAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,13 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class YmlUtil {
-    private static YamlConfiguration config;
-    private static File configFile;
+public final class YmlUtil {
+    private static YamlConfiguration config = YamlConfiguration.loadConfiguration(LocationFromSignAPI.getPluginConfig());
 
-    public YmlUtil(File file){
-        config = YamlConfiguration.loadConfiguration(file);
-        configFile = file;
+    private YmlUtil(){
     }
 
     public static void writeDataConfig(String path, Location location){
@@ -75,7 +73,7 @@ public class YmlUtil {
     }
     private static void saveConfig(){
         try {
-            config.save(configFile);
+            config.save(LocationFromSignAPI.getPluginConfig());
         }catch (IOException e){
             Bukkit.getLogger().info(e.getMessage());
         }
