@@ -60,16 +60,19 @@ public final class YmlUtil {
         }
         return path.toString();
     }
-    public static Location getLocation(String pathFronSing, World world){
+    public static Location getLocation(String pathFronSing, World world) {
         String path = "point." + pathFronSing;
-        if (pathFronSing != null){
-            Location location = config.getSerializable(path, Location.class);
-            if (location != null) {
-                location.setWorld(world);
-            }
-            return location;
+        Location location = config.getSerializable(path, Location.class);
+
+        if (location == null) return null;
+
+        if (world != null) {
+            location.setWorld(world);
         }
-        return null;
+        else if (location.getWorld() == null) {
+            return null;
+        }
+        return location;
     }
     private static void saveConfig(){
         try {
