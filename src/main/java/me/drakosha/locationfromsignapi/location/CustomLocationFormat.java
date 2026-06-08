@@ -1,5 +1,8 @@
 package me.drakosha.locationfromsignapi.location;
 
+import lombok.Getter;
+
+@Getter
 public class CustomLocationFormat {
     private final double x;
     private final double y;

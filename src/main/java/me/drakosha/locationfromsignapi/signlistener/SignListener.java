@@ -1,6 +1,9 @@
 package me.drakosha.locationfromsignapi.signlistener;
 
-import me.drakosha.locationfromsignapi.ymlutil.YmlUtil;
+import lombok.var;
+import me.drakosha.locationfromsignapi.json.JsonUtil;
+import me.drakosha.locationfromsignapi.location.CustomLocationFormat;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -16,27 +19,44 @@ public class SignListener implements Listener {
     public void signChangeEvent(SignChangeEvent event) {
         if (event.getLines() != null) {
             if (event.getLine(0).equals("point")){
-                String path = YmlUtil.getPathToArraySign(event.getLines());
+                if (event.getPlayer().getGameMode() != GameMode.CREATIVE){
+                    return;
+                }
+                String path = getPathToArraySign(event.getLines());
+                if (JsonUtil.getElementByPath(path) != null){
+                    event.getPlayer().sendMessage("sign with this description already exist");
+                    event.setCancelled(true);
+                    return;
+                }
 
                 BlockFace blockFace = getFacing(event.getBlock().getData());
 
                 Location signLocation = event.getBlock().getLocation();
-                signLocation.setX(signLocation.getX() + 0.5);
-                signLocation.setZ(signLocation.getZ() + 0.5);
-                signLocation.setYaw(getYawFromFace(blockFace));
 
-                YmlUtil.writeDataConfig(path, signLocation);
+                var clf = new CustomLocationFormat(
+                        signLocation.getX() + 0.5,
+                        signLocation.getY(),
+                        signLocation.getZ() + 0.5,
+                        getYawFromFace(blockFace)
+                );
+
+                JsonUtil.setJsonObjectByPath(path, clf);
             }
         }
     }
     @EventHandler
-    public void signBlokeEvent(BlockBreakEvent event){
+    public void signBrokeEvent(BlockBreakEvent event){
         if (event.getBlock().getState() instanceof Sign){
             Sign sign = (Sign) event.getBlock().getState();
-
             if (sign.getLine(0).equals("point") && sign.getLines().length > 1){
-                String path = YmlUtil.getPathToArraySign(sign.getLines());
-                YmlUtil.removeDataConfig(path);
+                if (event.getPlayer().getGameMode() != GameMode.CREATIVE){
+                    return;
+                }
+
+                String path = getPathToArraySign(sign.getLines());
+
+                JsonUtil.removeJsonObjectByPath(path);
+
             }
         }
     }
@@ -118,5 +138,15 @@ public class SignListener implements Listener {
             default:
                 return null;
         }
+    }
+    private String getPathToArraySign(String[] lines){
+        if (lines == null) return "";
+        StringBuilder path = new StringBuilder();
+        for (int i = 1; i < lines.length; i++){
+            String s = lines[i];
+            if (s.isEmpty()) break;
+            path.append(s);
+        }
+        return path.toString();
     }
 }
