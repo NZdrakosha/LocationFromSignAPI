@@ -7,28 +7,20 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 
 public class LocationFromSignAPI extends JavaPlugin {
     @Getter
-    private static Plugin instance;
+    public static Plugin instance;
     @Getter
-    private static File pluginConfig;
+    private static File jsonFile;
 
     public static void init (Plugin plugin) {
         instance = plugin;
-        pluginConfig = new File(instance.getDataFolder().getPath() + "/LocationInSing", "mapsConfig.yml");
-        createYMLFile(pluginConfig);
+        jsonFile = new File(instance.getDataFolder() + "/locations", "LocationFromSign.json");
 
-        Bukkit.getPluginManager().registerEvents(new SignListener(), instance);
-    }
-    public static void createYMLFile(File file){
-        if (!file.exists()) {
-            try {
-                instance.getConfig().save(file);
-            } catch (IOException e) {
-                Bukkit.getLogger().info(e.getMessage());
-            }
+        if (!jsonFile.exists()) {
+            jsonFile.mkdir();
         }
+        Bukkit.getPluginManager().registerEvents(new SignListener(), instance);
     }
 }
