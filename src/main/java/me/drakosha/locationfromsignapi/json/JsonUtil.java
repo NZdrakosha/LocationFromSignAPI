@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.drakosha.locationfromsignapi.LocationFromSignAPI;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,27 +17,29 @@ import java.util.List;
 public class JsonUtil {
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     static File file = LocationFromSignAPI.getJsonFile();
+    static JsonObject readFile = readJsonFile();
 
 
     public static JsonElement getElementByPath(String path){
-        JsonObject jo = readJsonFile();
-        if (path == null || path.isEmpty()){
-            return jo;
-        }
-        String[] paths = path.split("\\.");
-        JsonElement element = jo;
-
-        for (String key : paths){
-            if (element instanceof JsonObject && ((JsonObject) element).has(key)){
-                element = ((JsonObject) element).get(key);
-            }else {
-                return null;
+            JsonObject jo = readFile;
+            if (path == null || path.isEmpty()){
+                return jo;
             }
-        }
+            String[] paths = path.split("\\.");
+            JsonElement element = jo;
+
+            for (String key : paths){
+                if (element instanceof JsonObject && ((JsonObject) element).has(key)){
+                    element = ((JsonObject) element).get(key);
+                }else {
+                    return null;
+                }
+            }
         return element;
+
     }
     public static void removeJsonObjectByPath(String path){
-        JsonObject jo = readJsonFile();
+        JsonObject jo = readFile;
 
         if (path == null || path.isEmpty()){
             return;
@@ -70,12 +73,13 @@ public class JsonUtil {
                 }
             }
         }
+
         writeJsonData(jo);
     }
 
 
     public static void setJsonObjectByPath(String path, Object object){
-        JsonObject alreadyExistFile = readJsonFile();
+        JsonObject alreadyExistFile = readFile;
 
         String[] paths = path.split("\\.");
         JsonObject current = alreadyExistFile;
@@ -115,6 +119,7 @@ public class JsonUtil {
     private static void writeJsonData(JsonObject jo) {
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(jo, writer);
+            writer.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
