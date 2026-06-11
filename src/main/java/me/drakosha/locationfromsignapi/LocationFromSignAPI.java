@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public class LocationFromSignAPI extends JavaPlugin {
     @Getter
@@ -18,8 +19,16 @@ public class LocationFromSignAPI extends JavaPlugin {
         instance = plugin;
         jsonFile = new File(instance.getDataFolder() + "/locations", "LocationFromSign.json");
 
-        if (!jsonFile.exists()) {
-            jsonFile.mkdir();
+        try {
+            File parent = jsonFile.getParentFile();
+            if (parent != null && !parent.exists()){
+                parent.mkdirs();
+            }
+            if (!jsonFile.exists()){
+                jsonFile.createNewFile();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
         }
         Bukkit.getPluginManager().registerEvents(new SignListener(), instance);
     }
