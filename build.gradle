@@ -8,6 +8,9 @@ version = '1.0.0'
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
     maven { url 'https://jitpack.io' }
 }
 publishing {
@@ -18,10 +21,8 @@ publishing {
     }
 }
 
-
-
 dependencies {
-    compileOnly files('libs/spigot-1.12.2.jar')
+    compileOnly name: 'spigot-1.12.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
